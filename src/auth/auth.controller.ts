@@ -2,6 +2,7 @@ import { type Request, type Response, Router } from "express";
 import { catchAsync } from "../utils/catchAsyncWrapper";
 import { authManager } from "./auth.manager";
 
+
 export class authController {
   public router = Router();
   private _authManager = new authManager();
@@ -10,7 +11,7 @@ export class authController {
     this.initializeRoutes();
   }
   private initializeRoutes() {
-    this.router.post("/signup", catchAsync(this.registerUser.bind(this)));
+    this.router.post("/register", catchAsync(this.registerUser.bind(this)));
     this.router.get("/hello", catchAsync(this.hello.bind(this)));
   }
 
@@ -20,16 +21,22 @@ export class authController {
     });
   }
   public async registerUser(req: Request, res: Response) {
-    const { registerUser } = req.body;
+    try{
+      const {name, email, userName, password} = req.body;
+      console.log(name, email, userName, password)
+      const newUser = await this._authManager.registerUser({
+        name, email, userName, password
+      });
 
-    const newUser = await this._authManager.registerUser(registerUser);
+      return res.status(201).json({message: "Successfully registered", user: newUser});
+    }
+    catch(error: any)
+    {
+      if (error.message == "Email allready exists"){
+        return res.status(400).json({message: error.message});
 
-    if (newUser) {
-      return res.status(200).json({ message: "Successfully registered" });
-    } else if (newUser == "Invalid email") {
-      return res.status(500).json({ message: "Unique Email require" });
-    } else {
-      return res.status(500).json({ message: "Server error" });
+      }
+      return res.status(500).json({message: error.message});
     }
   }
 }

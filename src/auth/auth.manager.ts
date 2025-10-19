@@ -2,21 +2,21 @@ import { userTable } from "../utils/prisma";
 
 export class authManager {
   public async registerUser(userInformation: {
-    email: string;
     name: string;
+    email: string;
     userName: string;
     password: string;
   }) {
     try {
+
       const uniqueUser = await userTable.findFirst({
         where: {
           email: `${userInformation.email}`,
         },
       });
-      console.log(uniqueUser);
-
+      console.log(uniqueUser)
       if (uniqueUser) {
-        return "Invalid email";
+        throw new Error("Email allready exists");
       }
 
       const newUser = await userTable.create({
@@ -27,17 +27,19 @@ export class authManager {
           password: userInformation.password,
         },
       });
+      console.log(newUser)
+      return newUser;
+    }
+    catch(error){
+      if(error instanceof Error) {
 
-      if (newUser) {
-        return newUser;
-      } else {
-        return null;
+        throw new Error( error.message);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        return null;
+      else{
+        throw new Error("Unknown error occured");
       }
+
+
     }
   }
 }
