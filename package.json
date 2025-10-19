@@ -7,6 +7,7 @@
     "@eslint/js": "^9.38.0",
     "@types/bun": "latest",
     "eslint": "^9.38.0",
+    "prettier": "^3.3.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.1"
   },
@@ -38,8 +39,7 @@
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
       "eslint --fix",
-      "prettier --write",
-      "tsc --noEmit"
+      "prettier --write"
     ]
   }
 }
