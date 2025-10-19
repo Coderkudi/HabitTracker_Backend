@@ -35,7 +35,9 @@
     "dev": "bun --watch index.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:verbose": "tsc --noEmit --pretty --extendedDiagnostics",
+    "eslint":"npx eslint .",
     "prepare": "husky"
+
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
