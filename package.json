@@ -4,7 +4,11 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@eslint/js": "^9.38.0",
+    "@types/bun": "latest",
+    "eslint": "^9.38.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -16,13 +20,26 @@
     "@types/express-rate-limit": "^6.0.2",
     "@types/helmet": "^4.0.0",
     "cors": "^2.8.5",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "helmet": "^8.1.0",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.10",
     "prisma": "^6.14.0"
   },
   "scripts": {
-    "dev": "bun --watch index.ts"
+    "dev": "bun --watch index.ts",
+    "typecheck": "tsc --noEmit",
+    "typecheck:verbose": "tsc --noEmit --pretty --extendedDiagnostics",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "tsc --noEmit"
+    ]
   }
 }
