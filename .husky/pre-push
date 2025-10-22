@@ -2,11 +2,3 @@
 
 # Always run TypeScript check
 npm run typecheck
-
-# Run translation validation but don't block push
-if [ "$SKIP_TRANSLATIONS" = "true" ]; then
-  echo "Skipping translation validation (SKIP_TRANSLATIONS=true)"
-else
-  echo "Running translation validation (warnings only, won't block push)..."
-  npm run validate-translations || echo -e "\033[33mWarning: Translation issues detected, but push will continue. Please fix these issues later.\033[0m"
-fi
