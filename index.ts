@@ -27,15 +27,14 @@
 //   exitHandler();
 // };
 
-import app from "./src/app";
-import "dotenv/config";
-
-let server: any;
+import 'dotenv/config';
+import { Server } from 'http';
+import app from './src/app';
 
 const Serverconfig = {
-  port: process.env.PORT || 8000,
+    port: process.env.PORT || 8000,
 };
 
-server = app.listen(Serverconfig.port, () => {
-  console.log(`Server listening at ${Serverconfig.port}`);
+export const server: Server = app.listen(Serverconfig.port, () => {
+    console.log(`Server listening at ${Serverconfig.port}`);
 });

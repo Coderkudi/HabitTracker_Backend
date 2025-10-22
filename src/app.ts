@@ -21,21 +21,23 @@
 //   console.log("server is running on http://localhost:4000")
 // );
 
-import cors from "cors";
-import express from "express";
-import router from "./router";
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import router from './router';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 const corsOption = {
-  origin: true,
-  credentials: true,
-  accessControlAllowOrigin: true,
+    origin: true,
+    credentials: true,
+    accessControlAllowOrigin: true,
 };
 
 app.use(cors(corsOption));
 
-app.use("/api/v1", router);
+app.use('/api/v1', router);
 
 export default app;
