@@ -1,5 +1,6 @@
 name: Lint and Format Check
-
+permissions:
+  contents: write
 on:
     pull_request:
         branches: [main, dev]
@@ -16,14 +17,14 @@ jobs:
               with:
                   node-version: 18
                   cache: npm
-            
+
             - name: Install dependencies
               run: npm ci
-              
+
             # Auto-format code first
             - name: Format code with Prettier
               run: npx prettier --write "**/*.{js,jsx,ts,tsx}"
-              
+
             # Commit formatting changes if needed
             - name: Commit changes
               if: success()
@@ -33,10 +34,10 @@ jobs:
                 commit_user_name: "GitHub Actions"
                 commit_user_email: "github-actions@github.com"
                 commit_author: "GitHub Actions <github-actions@github.com>"
-            
+
             # Now check that everything passes
             - name: Run ESLint
               run: npm run lint
-              
+
             - name: Run TypeScript check
               run: npm run typecheck
