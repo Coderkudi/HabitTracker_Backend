@@ -37,7 +37,7 @@ jobs:
 
             # Now check that everything passes
             - name: Run ESLint
-              run: npm run eslint
+              run: npm run eslint -- --ignore-pattern "generated/**" --ignore-pattern "**/generated/**"
 
             - name: Run TypeScript check
               run: npm run typecheck
