@@ -37,7 +37,7 @@ jobs:
 
             # Now check that everything passes
             - name: Run ESLint
-              run: npm run lint
+              run: npm run eslint
 
             - name: Run TypeScript check
               run: npm run typecheck
