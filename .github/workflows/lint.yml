@@ -23,7 +23,7 @@ jobs:
 
             # Auto-format code first
             - name: Format code with Prettier
-              run: npx prettier --write "**/*.{js,jsx,ts,tsx}"
+              run: npx prettier --write "src/**/*.{js,jsx,ts,tsx}" "index.ts" "*.config.{js,mjs,ts}"
 
             # Commit formatting changes if needed
             - name: Commit changes

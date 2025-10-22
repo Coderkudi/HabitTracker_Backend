@@ -1,0 +1,19 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+out
+build
+
+# Generated code
+generated/
+
+# Prisma
+prisma/migrations/
+
+# Logs
+*.log
+
+# Coverage
+coverage
