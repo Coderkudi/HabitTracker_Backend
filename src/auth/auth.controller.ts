@@ -15,6 +15,11 @@ export class authController {
         this.router.post('/login', catchAsync(this.loginUser.bind(this)));
         this.router.get('/hello', catchAsync(this.hello.bind(this)));
         this.router.get('/me', verifyUser, catchAsync(this.me.bind(this)));
+        this.router.get(
+            '/logout',
+            verifyUser,
+            catchAsync(this.logout.bind(this))
+        );
     }
 
     public async hello(req: Request, res: Response) {
@@ -59,22 +64,29 @@ export class authController {
                     password,
                 });
                 console.log('tokens', tokens);
-                res.cookie('accessToken', tokens?.accessToken, {
-                    httpOnly: true,
-                    sameSite: 'lax',
-                    secure: false,
-                    path: '/',
-                    maxAge: 15 * 60 * 1000,
-                });
-                res.cookie('refreshToken', tokens?.refreshToken, {
-                    httpOnly: true,
-                    sameSite: 'lax',
-                    secure: false,
-                    path: '/',
-                    maxAge: 15 * 24 * 60 * 60 * 1000,
-                });
+                if (tokens) {
+                    res.cookie('accessToken', tokens?.accessToken, {
+                        httpOnly: true,
+                        sameSite: 'lax',
+                        secure: false,
+                        path: '/',
+                        maxAge: 15 * 60 * 1000,
+                    });
+                    res.cookie('refreshToken', tokens?.refreshToken, {
+                        httpOnly: true,
+                        sameSite: 'lax',
+                        secure: false,
+                        path: '/',
+                        maxAge: 15 * 24 * 60 * 60 * 1000,
+                    });
 
-                return res.status(200).json({ message: 'login Successfully' });
+                    return res
+                        .status(200)
+                        .json({ message: 'login Successfully' });
+                }
+                return res.status(400).json({
+                    message: 'Email or Password is wrong',
+                });
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -102,5 +114,26 @@ export class authController {
                 return res.status(500).json(error.message);
             }
         }
+    }
+
+    public async logout(req: Request, res: Response) {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false,
+            path: '/',
+        });
+
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false,
+            path: '/',
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'User logged out successfully',
+        });
     }
 }
