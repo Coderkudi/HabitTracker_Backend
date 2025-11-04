@@ -50,7 +50,7 @@ export class categoryManager {
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error(
-                    `the category with this name already exists for this user ${categoryInformation.categoryName}`
+                    `the category with the name ${categoryInformation.categoryName} already exists for this user `
                 );
             }
             if (error instanceof Error) {
