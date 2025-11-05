@@ -8,7 +8,7 @@ import 'express';
 
 declare namespace Express {
     export interface Request {
-        userInformation?: {
+        userInformation: {
             id: string;
             email: string;
         };
