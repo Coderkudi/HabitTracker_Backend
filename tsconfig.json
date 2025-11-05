@@ -27,5 +27,11 @@
         "noPropertyAccessFromIndexSignature": false
     },
     "exclude": ["node_modules", "generated"],
-    "include": ["src/**/*.ts", "index.ts", "temp.ts", "types"]
+    "include": [
+        "src/**/*.ts",
+        "index.ts",
+        "temp.ts",
+        "types/**/*.d.ts",
+        "types/**/*.ts"
+    ]
 }
