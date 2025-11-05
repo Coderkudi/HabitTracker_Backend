@@ -47,17 +47,19 @@ export class habitManager {
             if (existingHabit) {
                 throw new Error(`${habitInformation.habitName} already exists`);
             }
-
-            const newHabit = await habitsTable.create({
-                data: {
-                    name: habitInformation.habitName,
-                    description: habitInformation.habitDescription,
-                    categoryId: category?.id,
-                    userId: userId,
-                },
-            });
-            console.log('Habit created', newHabit);
-            return newHabit;
+            if (category) {
+                const newHabit = await habitsTable.create({
+                    data: {
+                        name: habitInformation.habitName,
+                        description: habitInformation.habitDescription,
+                        categoryId: category.id,
+                        userId: userId,
+                    },
+                });
+                return newHabit;
+            } else {
+                throw new Error('Category not found');
+            }
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error(
