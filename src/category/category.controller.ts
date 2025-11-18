@@ -1,5 +1,6 @@
 import { type Request, type Response, Router } from 'express';
 import verifyUser from '../middlewares/auth/jwtValidation';
+import { handleError } from '../utils/apiError';
 import { catchAsync } from '../utils/catchAsyncWrapper';
 import { categoryManager } from './category.manager';
 
@@ -43,6 +44,7 @@ export class categoryController {
                 if (categories) {
                     return res.status(200).json(categories);
                 }
+                console.log('categories getted: ', categories);
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -53,10 +55,21 @@ export class categoryController {
     }
 
     public async createCategory(req: Request, res: Response) {
+        console.log('Incomming data', req.body);
         try {
             const userInformation = req.userInformation;
             const { categoryName, categoryDescription } = req.body;
-            console.log(categoryName, categoryDescription);
+            console.log(
+                'categoryName:',
+                categoryName,
+                'Category Description',
+                categoryDescription
+            );
+            // if (!categoryName || categoryName.trim() === '') {
+            // return res
+            //     .status(400)
+            //     .json({ message: 'Enter a category name' });
+            // }
             const newCategory = await this._categoryManager.createCategory(
                 { categoryName, categoryDescription },
                 userInformation?.id || ''
@@ -66,7 +79,7 @@ export class categoryController {
                 data: newCategory,
             });
         } catch (error) {
-            return res.status(500).json({ message: (error as Error).message });
+            return handleError(res, error);
         }
     }
 }

@@ -1,5 +1,6 @@
 import { type Request, type Response, Router } from 'express';
 import verifyUser from '../middlewares/auth/jwtValidation';
+import { handleError } from '../utils/apiError';
 import { catchAsync } from '../utils/catchAsyncWrapper';
 import { habitManager } from './habit.manager';
 
@@ -50,14 +51,24 @@ export class habitController {
 
     public async createHabit(req: Request, res: Response) {
         try {
+            console.log('hello');
+
+            console.log(req.body);
+
             const userInformation = req.userInformation;
-            const { habitName, habitDescription, habitCategoryName } = req.body;
+
+            // console.log('world');
+            const { habitName, habitDescription, categoryId } = req.body;
+            console.log(habitName, habitDescription, categoryId);
+
+            // if (!habitName || habitName.trim() === '') {
+            // }
 
             const newHabit = await this._habitManager.createHabit(
                 {
                     habitName,
                     habitDescription,
-                    habitCategoryName,
+                    categoryId,
                 },
                 userInformation?.id || ''
             );
@@ -66,7 +77,7 @@ export class habitController {
                 data: newHabit,
             });
         } catch (error) {
-            return res.status(500).json({ message: (error as Error).message });
+            return handleError(res, error);
         }
     }
 }

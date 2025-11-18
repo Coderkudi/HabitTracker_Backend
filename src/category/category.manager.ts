@@ -1,3 +1,4 @@
+import { AppError } from '../utils/apiError';
 import { categoryTable } from '../utils/prisma';
 
 export class categoryManager {
@@ -33,9 +34,7 @@ export class categoryManager {
             });
             console.log('existingCategory', existingCategory);
             if (existingCategory) {
-                throw new Error(
-                    `${categoryInformation.categoryName} category already exists`
-                );
+                throw new AppError('category already exists', 409);
             }
 
             const newCategory = await categoryTable.create({
@@ -48,15 +47,11 @@ export class categoryManager {
             console.log('Category created', newCategory);
             return newCategory;
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(
-                    `the category with the name ${categoryInformation.categoryName} already exists for this user `
-                );
+            if (error instanceof AppError) {
+                throw new AppError(error.message, error.statusCode);
+            } else if (error instanceof Error) {
+                throw new AppError(error.message, 500);
             }
-            if (error instanceof Error) {
-                throw new Error('Email already exists');
-            }
-            throw new Error('Unknown error');
         }
 
         // if (userId == existingCategory.userId) {

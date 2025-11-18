@@ -1,4 +1,5 @@
-import { categoryTable, habitsTable } from '../utils/prisma';
+import { AppError } from '../utils/apiError';
+import { habitsTable } from '../utils/prisma';
 
 export class habitManager {
     public async habits(userInformation: { id: string; email: string }) {
@@ -23,19 +24,19 @@ export class habitManager {
         habitInformation: {
             habitName: string;
             habitDescription: string;
-            habitCategoryName: string;
+            categoryId: string;
         },
         userId: string
     ) {
         try {
-            const category = await categoryTable.findFirst({
-                where: {
-                    name: habitInformation.habitCategoryName,
-                    userId,
-                },
-            });
+            // const category = await categoryTable.findFirst({
+            //     where: {
+            //         name: habitInformation.habitCategoryName,
+            //         userId,
+            //     },
+            // });
 
-            if (!category) throw new Error('Category not found');
+            // if (!category) throw new Error('Category not found');
 
             const existingHabit = await habitsTable.findFirst({
                 where: {
@@ -45,26 +46,26 @@ export class habitManager {
             });
             console.log('existingHabit', existingHabit);
             if (existingHabit) {
-                throw new Error(`${habitInformation.habitName} already exists`);
+                throw new AppError('Habbit already exits', 409);
             }
-            if (category) {
-                const newHabit = await habitsTable.create({
-                    data: {
-                        name: habitInformation.habitName,
-                        description: habitInformation.habitDescription,
-                        categoryId: category.id,
-                        userId: userId,
-                    },
-                });
-                return newHabit;
-            } else {
-                throw new Error('Category not found');
-            }
+
+            const newHabit = await habitsTable.create({
+                data: {
+                    name: habitInformation.habitName,
+                    description: habitInformation.habitDescription,
+                    categoryId: habitInformation.categoryId,
+                    userId: userId,
+                },
+            });
+            return newHabit;
+            //  else {
+            //     throw new Error('Category not found');
+            // }
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(
-                    `The habit with the name ${habitInformation.habitName} already exists for this user `
-                );
+            if (error instanceof AppError) {
+                throw new AppError(error.message, error.statusCode);
+            } else if (error instanceof Error) {
+                throw new AppError(error.message, 500);
             }
         }
     }
