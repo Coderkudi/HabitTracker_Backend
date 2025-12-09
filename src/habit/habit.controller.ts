@@ -38,6 +38,7 @@ export class habitController {
             if (userInformation) {
                 const habits = await this._habitManager.habits(userInformation);
                 if (habits) {
+                    console.log('Habits getted: ', habits);
                     return res.status(200).json(habits);
                 }
             }

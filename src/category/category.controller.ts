@@ -42,9 +42,9 @@ export class categoryController {
                 const categories =
                     await this._categoryManager.categories(userInformation);
                 if (categories) {
+                    console.log('categories getted: ', categories);
                     return res.status(200).json(categories);
                 }
-                console.log('categories getted: ', categories);
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
