@@ -1,0 +1,8 @@
+db_data
+node_modules
+.env
+.git
+.gitignore
+README.md
+tsconfig.json
+*.log

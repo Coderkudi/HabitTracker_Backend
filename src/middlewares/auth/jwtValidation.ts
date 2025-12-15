@@ -3,7 +3,7 @@ import {
     generateAccessToken,
     verifyAccessToken,
     verifyRefreshToken,
-} from '../../utils/tokens';
+} from '../../utils/tokens.js';
 
 const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
     try {

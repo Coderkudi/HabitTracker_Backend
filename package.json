@@ -36,6 +36,9 @@
     },
     "scripts": {
         "dev": "bun --watch index.ts",
+        "build": "tsc -p tsconfig.build.json",
+        "postbuild": "cp -r generated dist/generated",
+        "start": "node dist/index.js",
         "typecheck": "tsc --noEmit -p tsconfig.json",
         "typecheck:verbose": "tsc --noEmit --pretty --extendedDiagnostics",
         "eslint": "npx eslint .",

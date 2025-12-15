@@ -1,8 +1,7 @@
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/index.js';
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export const userTable = prisma.user;
-
 export const categoryTable = prisma.category;
 export const habitsTable = prisma.habits;

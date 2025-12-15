@@ -1,8 +1,8 @@
 import { type Request, type Response, Router } from 'express';
-import verifyUser from '../middlewares/auth/jwtValidation';
-import { handleError } from '../utils/apiError';
-import { catchAsync } from '../utils/catchAsyncWrapper';
-import { categoryManager } from './category.manager';
+import verifyUser from '../middlewares/auth/jwtValidation.js';
+import { handleError } from '../utils/apiError.js';
+import { catchAsync } from '../utils/catchAsyncWrapper.js';
+import { categoryManager } from './category.manager.js';
 
 export class categoryController {
     public router = Router();
@@ -58,7 +58,8 @@ export class categoryController {
         console.log('Incomming data', req.body);
         try {
             const userInformation = req.userInformation;
-            const { categoryName, categoryDescription } = req.body;
+            const { categoryName, categoryDescription, categoryIcon } =
+                req.body;
             console.log(
                 'categoryName:',
                 categoryName,
@@ -71,7 +72,7 @@ export class categoryController {
             //     .json({ message: 'Enter a category name' });
             // }
             const newCategory = await this._categoryManager.createCategory(
-                { categoryName, categoryDescription },
+                { categoryName, categoryDescription, categoryIcon },
                 userInformation?.id || ''
             );
             return res.status(201).json({

@@ -1,7 +1,7 @@
 import { type Request, type Response, Router } from 'express';
-import verifyUser from '../middlewares/auth/jwtValidation';
-import { catchAsync } from '../utils/catchAsyncWrapper';
-import { authManager } from './auth.manager';
+import verifyUser from '../middlewares/auth/jwtValidation.js';
+import { catchAsync } from '../utils/catchAsyncWrapper.js';
+import { authManager } from './auth.manager.js';
 
 export class authController {
     public router = Router();
@@ -15,7 +15,7 @@ export class authController {
         this.router.post('/login', catchAsync(this.loginUser.bind(this)));
         this.router.get('/hello', catchAsync(this.hello.bind(this)));
         this.router.get('/me', verifyUser, catchAsync(this.me.bind(this)));
-        this.router.get(
+        this.router.post(
             '/logout',
             verifyUser,
             catchAsync(this.logout.bind(this))
@@ -117,23 +117,25 @@ export class authController {
     }
 
     public async logout(req: Request, res: Response) {
-        res.clearCookie('accessToken', {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
-            path: '/',
-        });
+        try {
+            res.clearCookie('accessToken', {
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: false,
+            });
 
-        res.clearCookie('refreshToken', {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
-            path: '/',
-        });
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                sameSite: 'strict',
+                secure: false,
+            });
 
-        return res.status(200).json({
-            success: true,
-            message: 'User logged out successfully',
-        });
+            return res.status(200).json({
+                success: true,
+                message: 'User logged out successfully',
+            });
+        } catch (error) {
+            return res.status(500).json({ message: 'Logout Failed' });
+        }
     }
 }

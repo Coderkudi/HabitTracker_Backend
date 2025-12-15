@@ -1,5 +1,6 @@
-import { AppError } from '../utils/apiError';
-import { habitsTable } from '../utils/prisma';
+import { Prisma } from '../../generated/prisma/index.js';
+import { AppError } from '../utils/apiError.js';
+import { habitsTable } from '../utils/prisma.js';
 
 export class habitManager {
     public async habits(userInformation: { id: string; email: string }) {
@@ -8,15 +9,16 @@ export class habitManager {
                 where: {
                     userId: userInformation.id,
                 },
+                include: {
+                    category: true,
+                },
             });
             if (habits) {
                 return habits;
             }
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error('Error fetching habits');
-            }
-            throw new Error('failed to fetch habits');
+            console.error('MANAGER HABITS ERROR:', error);
+            throw error; // don't wrap
         }
     }
 
@@ -24,20 +26,12 @@ export class habitManager {
         habitInformation: {
             habitName: string;
             habitDescription: string;
+            habitIcon: string;
             categoryId: string;
         },
         userId: string
     ) {
         try {
-            // const category = await categoryTable.findFirst({
-            //     where: {
-            //         name: habitInformation.habitCategoryName,
-            //         userId,
-            //     },
-            // });
-
-            // if (!category) throw new Error('Category not found');
-
             const existingHabit = await habitsTable.findFirst({
                 where: {
                     name: habitInformation.habitName,
@@ -46,15 +40,21 @@ export class habitManager {
             });
             console.log('existingHabit', existingHabit);
             if (existingHabit) {
-                throw new AppError('Habbit already exits', 409);
+                throw new AppError('Habbit already exists', 409);
             }
 
             const newHabit = await habitsTable.create({
                 data: {
                     name: habitInformation.habitName,
                     description: habitInformation.habitDescription,
+                    icon: habitInformation.habitIcon,
                     categoryId: habitInformation.categoryId,
                     userId: userId,
+                    completed: Array(7).fill(false),
+                    streak: 0,
+                },
+                include: {
+                    category: true,
                 },
             });
             return newHabit;
@@ -63,10 +63,14 @@ export class habitManager {
             // }
         } catch (error) {
             if (error instanceof AppError) {
-                throw new AppError(error.message, error.statusCode);
-            } else if (error instanceof Error) {
+                throw error;
+            }
+
+            if (error instanceof Error) {
                 throw new AppError(error.message, 500);
             }
+
+            throw new AppError('Unknown error', 500);
         }
     }
 }

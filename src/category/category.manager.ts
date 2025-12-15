@@ -1,5 +1,5 @@
-import { AppError } from '../utils/apiError';
-import { categoryTable } from '../utils/prisma';
+import { AppError } from '../utils/apiError.js';
+import { categoryTable } from '../utils/prisma.js';
 
 export class categoryManager {
     public async categories(userInformation: { id: string; email: string }) {
@@ -22,6 +22,7 @@ export class categoryManager {
         categoryInformation: {
             categoryName: string;
             categoryDescription: string;
+            categoryIcon: string;
         },
         userId: string
     ) {
@@ -41,6 +42,7 @@ export class categoryManager {
                 data: {
                     name: categoryInformation.categoryName,
                     description: categoryInformation.categoryDescription,
+                    icon: categoryInformation.categoryIcon || '📌',
                     userId,
                 },
             });
@@ -48,10 +50,14 @@ export class categoryManager {
             return newCategory;
         } catch (error) {
             if (error instanceof AppError) {
-                throw new AppError(error.message, error.statusCode);
-            } else if (error instanceof Error) {
+                throw error;
+            }
+
+            if (error instanceof Error) {
                 throw new AppError(error.message, 500);
             }
+
+            throw new AppError('Unknown error', 500);
         }
 
         // if (userId == existingCategory.userId) {

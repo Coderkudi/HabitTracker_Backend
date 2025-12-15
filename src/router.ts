@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { authController } from './auth/auth.controller';
-import { categoryController } from './category/category.controller';
-import { habitController } from './habit/habit.controller';
+import { authController } from './auth/auth.controller.js';
+import { categoryController } from './category/category.controller.js';
+import { habitController } from './habit/habit.controller.js';
 
 const router = Router();
 const routes = [

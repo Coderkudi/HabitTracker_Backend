@@ -1,5 +1,5 @@
-import { userTable } from '../utils/prisma';
-import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
+import { userTable } from '../utils/prisma.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/tokens.js';
 
 export class authManager {
     public async registerUser(userInformation: {
