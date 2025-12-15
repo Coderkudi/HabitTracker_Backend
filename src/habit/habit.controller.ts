@@ -42,7 +42,15 @@ export class habitController {
         try {
             const userInformation = req.userInformation;
             if (userInformation) {
-                const habits = await this._habitManager.habits(userInformation);
+                if (!userInformation.email) {
+                    return res
+                        .status(400)
+                        .json({ message: 'User email is required' });
+                }
+                const habits = await this._habitManager.habits({
+                    id: userInformation.id,
+                    email: userInformation.email,
+                });
                 if (habits) {
                     console.log('Habits getted: ', habits);
                     return res.status(200).json(habits);

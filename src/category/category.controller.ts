@@ -39,8 +39,15 @@ export class categoryController {
         try {
             const userInformation = req.userInformation;
             if (userInformation) {
-                const categories =
-                    await this._categoryManager.categories(userInformation);
+                if (!userInformation.email) {
+                    return res
+                        .status(400)
+                        .json({ message: 'User email is required' });
+                }
+                const categories = await this._categoryManager.categories({
+                    id: userInformation.id,
+                    email: userInformation.email,
+                });
                 if (categories) {
                     console.log('categories getted: ', categories);
                     return res.status(200).json(categories);

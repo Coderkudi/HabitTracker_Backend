@@ -2,11 +2,22 @@ services:
     postgres:
         image: postgres:15
         environment:
-            POSTGRES_DB: habittracker
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: password
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         volumes:
             - ./db_data:/var/lib/postgresql/data
         ports:
             - '5433:5432'
+        restart: always
+
+    backend:
+        build: .
+        ports:
+            - '${PORT}:${PORT}'
+        environment:
+            DATABASE_URL: ${DATABASE_URL}
+            PORT: ${PORT}
+        depends_on:
+            - postgres
         restart: always

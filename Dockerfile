@@ -1,48 +1,31 @@
-# FROM oven/bun:latest
-
-# WORKDIR /HabitTracker_Backend
-
-# COPY package*.json ./
-
-# RUN bun install
-
-# COPY . .
-
-# EXPOSE 5432
-
-# CMD ["bun", "dev"]
-
-FROM oven/bun:1.1.13 AS builder
-
-WORKDIR /HabitTracker_Backend
-
-COPY bun.lock package.json ./
+# Stage 1: Install all dependencies (for building)
+FROM oven/bun:1 AS deps
+WORKDIR /app
+COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
+# Stage 2: Install production dependencies (for runtime)
+FROM oven/bun:1 AS prod-deps
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
 
-COPY prisma ./prisma
+# Stage 3: Build the application
+FROM oven/bun:1 AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 RUN bunx prisma generate
-
-COPY tsconfig*.json ./
-COPY index.ts ./
-COPY src ./src
-COPY types ./types
-
 RUN bun run build
 
-
-FROM oven/bun:1.1.13-slim
-
-WORKDIR /HabitTracker_Backend
-
-
-COPY --from=builder /HabitTracker_Backend/dist ./dist
-COPY --from=builder /HabitTracker_Backend/node_modules ./node_modules
-# COPY --from=builder /HabitTracker_Backend/prisma ./prisma
-# COPY --from=builder /HabitTracker_Backend/generated ./generated
-COPY package.json ./
-
+# Stage 4: Production image
+FROM oven/bun:1-slim AS runner
+WORKDIR /app
 ENV NODE_ENV=production
+
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY package.json ./
 
 EXPOSE 8000
 
