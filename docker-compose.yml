@@ -1,6 +1,7 @@
 services:
     backend:
-        image: habittracker-backend
+        # image: habittracker-backend
+        build: .
         ports:
             - '8000:8000'
         env_file:
@@ -11,9 +12,9 @@ services:
     postgres:
         image: postgres:15
         environment:
-            POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
             DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5433/${POSTGRES_DB}
         ports:
             - '5433:5432'
