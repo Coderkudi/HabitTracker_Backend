@@ -2,6 +2,7 @@ import { type Request, type Response, Router } from 'express';
 import verifyUser from '../middlewares/auth/jwtValidation.js';
 import { catchAsync } from '../utils/catchAsyncWrapper.js';
 import { authManager } from './auth.manager.js';
+import { error } from 'console';
 
 export class authController {
     public router = Router();
